@@ -7,26 +7,49 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
 import ChatIcon from '@material-ui/icons/Chat';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import { useDispatch, useSelector } from 'react-redux';
+import { auth } from './firebase';
+import { login, logout, selectUser } from './features/userSlice';
 
 function Header() {
+
+    const dispatch = useDispatch();
+
+    const logoutOfApp = () => {
+        dispatch(logout());
+        auth.signOut();
+    };
+
+    const user = useSelector(selectUser);
+
     return (
         <div className="header">
             <div className="header__left">
-                <img src="https://seeklogo.net/wp-content/uploads/2012/03/linkedin-icon-logo-vector.png" alt="linkedin"/>
+                <img src="https://seeklogo.net/wp-content/uploads/2012/03/linkedin-icon-logo-vector.png" alt="linkedin" />
 
                 <div className="header__search">
                     <SearchIcon />
-                    <input type="text" />
+                    <input placeholder='Search' type="text" />
                 </div>
-            </div>  
+            </div>
 
             <div className="header__right">
                 <HeaderOption Icon={HomeIcon} title="Home" />
-                <HeaderOption Icon={SupervisorAccountIcon} title="My NetWork"/>
+                <HeaderOption Icon={SupervisorAccountIcon} title="My NetWork" />
                 <HeaderOption Icon={BusinessCenterIcon} title="Jobs" />
-                <HeaderOption Icon={ChatIcon} title="Messaging"/>
-                <HeaderOption Icon={NotificationsIcon} title="Notifications"/>
-                <HeaderOption avatar="https://seeklogo.net/wp-content/uploads/2012/03/linkedin-icon-logo-vector.png" title="me"/>
+                <HeaderOption Icon={ChatIcon} title="Messaging" />
+                <HeaderOption Icon={NotificationsIcon} title="Notifications" />
+                {!user ?
+                    (<HeaderOption
+                        avatar={true}
+                        onClick={logoutOfApp}
+                        title="name" />) :
+                    (<HeaderOption
+                        avatar={true}
+                        onClick={logoutOfApp}
+                        title={user.displayName} />)
+
+                }
             </div>
         </div>
     )
